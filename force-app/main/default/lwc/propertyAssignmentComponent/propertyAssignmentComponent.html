@@ -1,0 +1,97 @@
+<template>
+    <lightning-card title="Manage Property Assignments" icon-name="standard:assignment">
+        <div class="slds-p-around_medium">
+
+            <!-- Table View (Default) -->
+            <template if:true={showTables}>
+                
+                <!-- Users Section -->
+                <div class="slds-m-bottom_large">
+                    <div class="slds-grid slds-grid_align-spread slds-m-bottom_small">
+                        <h3 class="slds-text-heading_small">Assigned Users</h3>
+                        <lightning-button 
+                            variant="neutral" 
+                            label="Edit Users" 
+                            icon-name="utility:edit"
+                            onclick={handleEditUsers}>
+                        </lightning-button>
+                    </div>
+                    
+                    <template if:true={hasUsers}>
+                        <lightning-datatable
+                            key-field="Id"
+                            data={assignedUsers}
+                            columns={userColumns}
+                            hide-checkbox-column>
+                        </lightning-datatable>
+                    </template>
+                    <template if:false={hasUsers}>
+                        <div class="slds-text-color_weak slds-p-around_small">
+                            No users assigned yet.
+                        </div>
+                    </template>
+                </div>
+
+                <!-- Groups Section -->
+                <div>
+                    <div class="slds-grid slds-grid_align-spread slds-m-bottom_small">
+                        <h3 class="slds-text-heading_small">Assigned Groups</h3>
+                        <lightning-button 
+                            variant="neutral" 
+                            label="Edit Groups" 
+                            icon-name="utility:edit"
+                            onclick={handleEditGroups}>
+                        </lightning-button>
+                    </div>
+                    
+                    <template if:true={hasGroups}>
+                        <lightning-datatable
+                            key-field="Id"
+                            data={assignedGroups}
+                            columns={groupColumns}
+                            hide-checkbox-column>
+                        </lightning-datatable>
+                    </template>
+                    <template if:false={hasGroups}>
+                        <div class="slds-text-color_weak slds-p-around_small">
+                            No groups assigned yet.
+                        </div>
+                    </template>
+                </div>
+            </template>
+
+            <!-- Edit Mode (Dual Listbox) -->
+            <template if:true={showEditor}>
+                <div class="slds-m-bottom_small">
+                    <lightning-badge label={editingType} class="slds-m-bottom_small"></lightning-badge>
+                </div>
+
+                <!-- Dual Listbox for Assignments -->
+                <lightning-dual-listbox
+                    name="assignSelector"
+                    label={listLabel}
+                    source-label="Available"
+                    selected-label="Assigned"
+                    options={availableOptions}
+                    value={selectedValues}
+                    onchange={handleSelectChange}>
+                </lightning-dual-listbox>
+
+                <!-- Footer Buttons -->
+                <div class="slds-text-align_right slds-m-top_medium">
+                    <lightning-button 
+                        variant="neutral" 
+                        label="Cancel" 
+                        onclick={handleCancel}>
+                    </lightning-button>
+                    <lightning-button 
+                        variant="brand" 
+                        label="Save Assignments" 
+                        class="slds-m-left_small" 
+                        onclick={handleSave}>
+                    </lightning-button>
+                </div>
+            </template>
+        </div>
+    </lightning-card>
+</template>

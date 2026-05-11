@@ -1,0 +1,62 @@
+<template>
+    <template if:true={shouldShowComponent}>
+        <lightning-card title="Sales Process" icon-name="standard:process">
+            <div class="slds-p-around_medium">
+                <lightning-accordion allow-multiple-sections-open>
+                    
+                    <lightning-accordion-section name="step1" label="1. Sale Value of the Property">
+                        <p>Evaluate and finalize the sale value of the property.</p>
+                    </lightning-accordion-section>
+
+                    <lightning-accordion-section name="step2" label="2. Buyer Details">
+                        <p>Collect and verify all buyer information.</p>
+                    </lightning-accordion-section>
+
+                    <lightning-accordion-section name="step3" label="3. Buyer Property Visit">
+                        <p>Schedule and complete the property visit for the buyer.</p>
+                    </lightning-accordion-section>
+
+                    <lightning-accordion-section name="step4" label="4. Buyer Interested & Group Creation">
+                        <p>Once the buyer agrees on the price, create a WhatsApp/Mail communication group.</p>
+                    </lightning-accordion-section>
+
+                    <lightning-accordion-section name="step5" label="5. Seller Documents Required">
+                        <ul class="custom-list">
+                            <li>Sale Deed</li>
+                            <li>Agreement to Sell</li>
+                            <li>Agreement to Construct</li>
+                            <li>E-Khata</li>
+                            <li>Latest Property Tax Receipt</li>
+                            <li>Car Parking Letter</li>
+                            <li>NOC from Builder/Association</li>
+                            <li>Aadhar</li>
+                            <li>PAN</li>
+                            <li>Cancelled Cheque</li>
+                        </ul>
+                    </lightning-accordion-section>
+
+                    <lightning-accordion-section name="case1" label="6. Case 1 – Buyer is Self-Funded">
+                        <ol class="custom-list">
+                            <li>Prepare Sale Agreement (optional).</li>
+                            <li>Confirm Registration Date.</li>
+                            <li><strong>TDS Payment</strong> (NRI / Domestic rules).</li>
+                            <li>Stamp Duty: 7.6%.</li>
+                            <li>Registration Day fund transfer.</li>
+                        </ol>
+                    </lightning-accordion-section>
+
+                    <lightning-accordion-section name="case2" label="7. Case 2 – Buyer Opts for Home Loan">
+                        <ol class="custom-list">
+                            <li>Submit Sale Agreement to bank.</li>
+                            <li>Bank verification & inspection.</li>
+                            <li>Confirm Registration Date.</li>
+                            <li><strong>TDS Payment</strong>.</li>
+                            <li>Final registration process.</li>
+                        </ol>
+                    </lightning-accordion-section>
+
+                </lightning-accordion>
+            </div>
+        </lightning-card>
+    </template>
+</template>

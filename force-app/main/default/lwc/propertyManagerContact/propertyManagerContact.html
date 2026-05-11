@@ -1,0 +1,203 @@
+<template>
+    <template if:true={shouldShowComponent}>
+    <lightning-card>
+        <div class="slds-card__body slds-card__body_inner">
+            
+            <!-- Loading State -->
+            <template if:true={isLoading}>
+                <div class="slds-text-align_center slds-p-around_medium">
+                    <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+                </div>
+            </template>
+
+            <!-- Manager Information Available -->
+            <template if:true={showManagerInfo}>
+                <div class="manager-container">
+                    
+                    <!-- Header Section -->
+                    <div class="slds-m-bottom_medium">
+                        <div class="slds-media">
+                            <div class="slds-media__figure">
+                                <span class="slds-icon_container slds-icon-standard-user" title="Manager">
+                                    <lightning-icon icon-name="standard:user" size="large" alternative-text="Manager"></lightning-icon>
+                                </span>
+                            </div>
+                            <div class="slds-media__body">
+                                <div class="slds-text-heading_medium slds-m-bottom_xx-small">
+                                    {managerInfo.managerName}
+                                </div>
+                                <template if:true={managerInfo.managerTitle}>
+                                    <div class="slds-text-body_small slds-text-color_weak">
+                                        {managerInfo.managerTitle}
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="slds-box slds-box_x-small slds-theme_shade slds-m-bottom_medium">
+                        <p class="slds-text-body_regular">
+                            <strong>Need assistance with your property?</strong><br/>
+                            Your property is managed under <strong>{managerInfo.parentPropertyName}</strong>. 
+                            Please feel free to reach out to your dedicated property manager for any questions, 
+                            concerns, or service requests. We're here to help ensure your property experience is exceptional.
+                        </p>
+                    </div>
+
+                    <!-- Contact Information -->
+                    <div class="slds-grid slds-wrap slds-gutters_small">
+                        
+                        <!-- Email -->
+                        <template if:true={managerInfo.managerEmail}>
+                            <div class="slds-col slds-size_1-of-1 slds-m-bottom_small">
+                                <div class="contact-card">
+                                    <div class="slds-media">
+                                        <div class="slds-media__figure">
+                                            <lightning-icon icon-name="utility:email" size="small" class="icon-email"></lightning-icon>
+                                        </div>
+                                        <div class="slds-media__body">
+                                            <div class="slds-text-body_small slds-text-color_weak">Email</div>
+                                            <a href={emailLink} class="slds-text-body_regular contact-link">
+                                                {managerInfo.managerEmail}
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+
+                        <!-- Phone -->
+                        <template if:true={managerInfo.managerPhone}>
+                            <div class="slds-col slds-size_1-of-1 slds-m-bottom_small">
+                                <div class="contact-card">
+                                    <div class="slds-media">
+                                        <div class="slds-media__figure">
+                                            <lightning-icon icon-name="utility:phone_portrait" size="small" class="icon-phone"></lightning-icon>
+                                        </div>
+                                        <div class="slds-media__body">
+                                            <div class="slds-text-body_small slds-text-color_weak">Phone</div>
+                                            <a href={phoneLink} class="slds-text-body_regular contact-link">
+                                                {managerInfo.managerPhone}
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <!--<div class="slds-m-top_medium slds-text-align_center">
+                        <template if:true={managerInfo.managerEmail}>
+                            <lightning-button 
+                                variant="brand" 
+                                label="Send Email" 
+                                onclick={handleEmailClick}
+                                icon-name="utility:email"
+                                class="slds-m-right_x-small">
+                            </lightning-button>
+                        </template>
+                        <template if:true={managerInfo.managerPhone}>
+                            <lightning-button 
+                                variant="neutral" 
+                                label="Call Now" 
+                                onclick={handlePhoneClick}
+                                icon-name="utility:call">
+                            </lightning-button>
+                        </template>
+                    </div>-->
+
+                </div>
+            </template>
+
+            <!-- No Manager Assigned -->
+            <template if:true={showNoManager}>
+                <div class="slds-text-align_center slds-p-around_medium">
+                    <lightning-icon icon-name="utility:info" size="medium" alternative-text="Information"></lightning-icon>
+                    <div class="slds-text-heading_small slds-m-top_small slds-m-bottom_x-small">
+                        No Property Manager Assigned
+                    </div>
+                    <div class="slds-text-body_regular slds-text-color_weak">
+                        {managerInfo.message}
+                    </div>
+                </div>
+            </template>
+
+            <!-- Error State -->
+            <template if:true={error}>
+                <div class="slds-text-align_center slds-p-around_medium">
+                    <lightning-icon icon-name="utility:error" size="medium" variant="error" alternative-text="Error"></lightning-icon>
+                    <div class="slds-text-heading_small slds-m-top_small slds-m-bottom_x-small">
+                        Unable to Load Manager Information
+                    </div>
+                    <div class="slds-text-body_regular slds-text-color_weak">
+                        {error}
+                    </div>
+                </div>
+            </template>
+
+        </div>
+    </lightning-card>
+    
+            <lightning-card title="Sales Process" icon-name="standard:process">
+            <div class="slds-p-around_medium">
+                <lightning-accordion allow-multiple-sections-open>
+                    
+                    <lightning-accordion-section name="step1" label="1. Sale Value of the Property">
+                        <p>Evaluate and finalize the sale value of the property.</p>
+                    </lightning-accordion-section>
+
+                    <lightning-accordion-section name="step2" label="2. Buyer Details">
+                        <p>Collect and verify all buyer information.</p>
+                    </lightning-accordion-section>
+
+                    <lightning-accordion-section name="step3" label="3. Buyer Property Visit">
+                        <p>Schedule and complete the property visit for the buyer.</p>
+                    </lightning-accordion-section>
+
+                    <lightning-accordion-section name="step4" label="4. Buyer Interested & Group Creation">
+                        <p>Once the buyer agrees on the price, create a WhatsApp/Mail communication group.</p>
+                    </lightning-accordion-section>
+
+                    <lightning-accordion-section name="step5" label="5. Seller Documents Required">
+                        <ul class="custom-list">
+                            <li>Sale Deed</li>
+                            <li>Agreement to Sell</li>
+                            <li>Agreement to Construct</li>
+                            <li>E-Khata</li>
+                            <li>Latest Property Tax Receipt</li>
+                            <li>Car Parking Letter</li>
+                            <li>NOC from Builder/Association</li>
+                            <li>Aadhar</li>
+                            <li>PAN</li>
+                            <li>Cancelled Cheque</li>
+                        </ul>
+                    </lightning-accordion-section>
+
+                    <lightning-accordion-section name="case1" label="6. Case 1 – Buyer is Self-Funded">
+                        <ol class="custom-list">
+                            <li>Prepare Sale Agreement (optional).</li>
+                            <li>Confirm Registration Date.</li>
+                            <li><strong>TDS Payment</strong> (NRI / Domestic rules).</li>
+                            <li>Stamp Duty: 7.6%.</li>
+                            <li>Registration Day fund transfer.</li>
+                        </ol>
+                    </lightning-accordion-section>
+
+                    <lightning-accordion-section name="case2" label="7. Case 2 – Buyer Opts for Home Loan">
+                        <ol class="custom-list">
+                            <li>Submit Sale Agreement to bank.</li>
+                            <li>Bank verification & inspection.</li>
+                            <li>Confirm Registration Date.</li>
+                            <li><strong>TDS Payment</strong>.</li>
+                            <li>Final registration process.</li>
+                        </ol>
+                    </lightning-accordion-section>
+
+                </lightning-accordion>
+            </div>
+        </lightning-card>
+    </template>
+</template>

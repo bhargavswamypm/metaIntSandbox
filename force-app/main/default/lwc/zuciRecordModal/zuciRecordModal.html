@@ -1,0 +1,23 @@
+<template>
+    <template if:true={isOpen}>
+        <div class="modal-backdrop" onclick={handleBackdropClick}>
+            <div class="modal-container" onclick={stopPropagation}>
+                <div class="modal-header">
+                    <h2 class="modal-title">{modalTitle}</h2>
+                    <button class="modal-close" onclick={handleClose}>✕</button>
+                </div>
+                <div class="modal-body">
+                    <lightning-record-form
+                        record-id={recordId}
+                        object-api-name={objectApiName}
+                        fields={fields}
+                        mode={formMode}
+                        onsuccess={handleSuccess}
+                        onerror={handleError}
+                        oncancel={handleClose}>
+                    </lightning-record-form>
+                </div>
+            </div>
+        </div>
+    </template>
+</template>

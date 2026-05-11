@@ -1,0 +1,73 @@
+<template>
+    <template if:true={shouldDisplay}>
+        <lightning-card title="Sales Process" icon-name="standard:process">
+            <div class="slds-p-around_medium">
+                <lightning-accordion allow-multiple-sections-open>
+                    <lightning-accordion-section name="step1" label="1. Sale Value of the Property">
+                        <p>Evaluate and finalize the sale value of the property.</p>
+                    </lightning-accordion-section>
+
+                    <lightning-accordion-section name="step2" label="2. Buyer Details">
+                        <p>Collect and verify all buyer information.</p>
+                    </lightning-accordion-section>
+
+                    <lightning-accordion-section name="step3" label="3. Buyer Property Visit">
+                        <p>Schedule and complete the property visit for the buyer.</p>
+                    </lightning-accordion-section>
+
+                    <lightning-accordion-section name="step4" label="4. Buyer Interested & Group Creation">
+                        <p>Once the buyer agrees on the price, create a WhatsApp/Mail communication group.</p>
+                    </lightning-accordion-section>
+
+                    <lightning-accordion-section name="step5" label="5. Seller Documents Required">
+                        <ul class="custom-list">
+                            <li>Sale Deed</li>
+                            <li>Agreement to Sell</li>
+                            <li>Agreement to Construct</li>
+                            <li>E-Khata</li>
+                            <li>Latest Property Tax Receipt</li>
+                            <li>Car Parking Letter</li>
+                            <li>NOC from Builder/Association</li>
+                            <li>Aadhar</li>
+                            <li>PAN</li>
+                            <li>Cancelled Cheque (for token money deposit)</li>
+                        </ul>
+                    </lightning-accordion-section>
+
+                    <lightning-accordion-section name="case1" label="6. Case 1 – Buyer is Self-Funded">
+                        <ol class="custom-list">
+                            <li>Prepare the Sale Agreement with buyer and seller details (Optional).</li>
+                            <li>Confirm the Registration Date.</li>
+                            <li>
+                                <strong>TDS Payment</strong>
+                                <ul>
+                                    <li><strong>NRI Buyers:</strong> 14.95% TDS, TAN required, TDS deposited equally to seller PANs, receipts issued.</li>
+                                    <li><strong>Domestic Buyers:</strong> 1% TDS, deposited equally. Example: 2 buyers & 2 sellers → 4 challans.</li>
+                                </ul>
+                            </li>
+                            <li>Stamp Duty: 7.6% of Sale Value (paid by Buyer).</li>
+                            <li>On Registration Day: Buyers transfer balance money, sellers hand over original documents.</li>
+                        </ol>
+                    </lightning-accordion-section>
+
+                    <lightning-accordion-section name="case2" label="7. Case 2 – Buyer Opts for Home Loan">
+                        <ol class="custom-list">
+                            <li>Prepare and submit the Sale Agreement to the bank.</li>
+                            <li>Bank verifies documents and conducts physical inspection.</li>
+                            <li>Confirm the Registration Date.</li>
+                            <li>
+                                <strong>TDS Payment</strong>
+                                <ul>
+                                    <li><strong>NRI Buyers:</strong> 14.95% TDS, TAN required, deposited equally, receipts issued.</li>
+                                    <li><strong>Domestic Buyers:</strong> 1% TDS, deposited equally; example: 2 buyers & 2 sellers → 4 challans.</li>
+                                </ul>
+                            </li>
+                            <li>Stamp Duty: 7.6% (Buyer responsibility).</li>
+                            <li>On Registration Day: Buyers transfer remaining amount, sellers hand over original documents.</li>
+                        </ol>
+                    </lightning-accordion-section>
+                </lightning-accordion>
+            </div>
+        </lightning-card>
+    </template>
+</template>

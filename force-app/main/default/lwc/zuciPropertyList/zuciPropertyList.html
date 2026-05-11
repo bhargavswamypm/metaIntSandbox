@@ -1,0 +1,593 @@
+<template>
+
+    <!-- ═══════════ NEW PROPERTY MODAL ═══════════ -->
+    <template if:true={showNewPropertyModal}>
+        <div class="modal-backdrop" onclick={handleCloseNewPropertyModal}></div>
+        <div class="modal-box modal-box-lg">
+            <div class="modal-header">
+                <span class="modal-title">New Property</span>
+                <button class="modal-close" onclick={handleCloseNewPropertyModal}>&#10005;</button>
+            </div>
+            <div class="modal-body">
+                <lightning-record-edit-form
+                    object-api-name="Property__c"
+                    onsuccess={handleNewPropertySaved}
+                    onerror={handleFormError}>
+                    <lightning-messages></lightning-messages>
+                    <div class="form-section-title">Property Information</div>
+                    <div class="form-grid">
+                        <lightning-input-field field-name="Name" required></lightning-input-field>
+                        <lightning-input-field field-name="Parent_Property__c"></lightning-input-field>
+                        <lightning-input-field field-name="Asking_Price__c"></lightning-input-field>
+                        <lightning-input-field field-name="Position__c"></lightning-input-field>
+                        <lightning-input-field field-name="Configuration__c"></lightning-input-field>
+                        <lightning-input-field field-name="Facing__c"></lightning-input-field>
+                        <lightning-input-field field-name="Floor__c"></lightning-input-field>
+                        <lightning-input-field field-name="Area__c"></lightning-input-field>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn-cancel" onclick={handleCloseNewPropertyModal}>Cancel</button>
+                        <lightning-button type="submit" label="Save" variant="brand"></lightning-button>
+                    </div>
+                </lightning-record-edit-form>
+            </div>
+        </div>
+    </template>
+
+    <!-- ═══════════ EDIT PROPERTY MODAL ═══════════ -->
+    <template if:true={showEditPropertyModal}>
+        <div class="modal-backdrop" onclick={handleCloseEditPropertyModal}></div>
+        <div class="modal-box modal-box-lg">
+            <div class="modal-header">
+                <span class="modal-title">Edit Property</span>
+                <button class="modal-close" onclick={handleCloseEditPropertyModal}>&#10005;</button>
+            </div>
+            <div class="modal-body">
+                <lightning-record-edit-form
+                    record-id={selectedRecordId}
+                    object-api-name="Property__c"
+                    onsuccess={handleEditPropertySaved}
+                    onerror={handleFormError}>
+                    <lightning-messages></lightning-messages>
+                    <div class="form-section-title">Property Information</div>
+                    <div class="form-grid">
+                        <lightning-input-field field-name="Name" required></lightning-input-field>
+                        <lightning-input-field field-name="Parent_Property__c"></lightning-input-field>
+                        <lightning-input-field field-name="Asking_Price__c"></lightning-input-field>
+                        <lightning-input-field field-name="Position__c"></lightning-input-field>
+                        <lightning-input-field field-name="Configuration__c"></lightning-input-field>
+                        <lightning-input-field field-name="Facing__c"></lightning-input-field>
+                        <lightning-input-field field-name="Floor__c"></lightning-input-field>
+                        <lightning-input-field field-name="Area__c"></lightning-input-field>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn-cancel" onclick={handleCloseEditPropertyModal}>Cancel</button>
+                        <lightning-button type="submit" label="Save" variant="brand"></lightning-button>
+                    </div>
+                </lightning-record-edit-form>
+            </div>
+        </div>
+    </template>
+
+    <!-- ═══════════ ACTIVITY MODAL (New + Edit) ═══════════ -->
+    <template if:true={showActivityModal}>
+        <div class="modal-backdrop" onclick={handleCloseActivityModal}></div>
+        <div class="modal-box modal-box-lg">
+            <div class="modal-header">
+                <span class="modal-title">{activityModalTitle}</span>
+                <button class="modal-close" onclick={handleCloseActivityModal}>&#10005;</button>
+            </div>
+            <div class="modal-body">
+                <!-- EVENT form -->
+                <template if:true={isEventType}>
+                    <lightning-record-edit-form
+                        record-id={editingActivityId}
+                        object-api-name="Event"
+                        onsuccess={handleActivitySaved}
+                        onerror={handleFormError}>
+                        <lightning-messages></lightning-messages>
+                        <div class="form-grid">
+                            <lightning-input-field field-name="Subject" required></lightning-input-field>
+                            <lightning-input-field field-name="StartDateTime" required></lightning-input-field>
+                            <lightning-input-field field-name="EndDateTime" required></lightning-input-field>
+                            <lightning-input-field field-name="Description" class="span-full"></lightning-input-field>
+                        </div>
+                        <lightning-input-field field-name="WhatId" value={activityWhatId} class="slds-hide"></lightning-input-field>
+                        <div class="modal-footer">
+                            <button class="btn-cancel" onclick={handleCloseActivityModal}>Cancel</button>
+                            <lightning-button type="submit" label="Save" variant="brand"></lightning-button>
+                        </div>
+                    </lightning-record-edit-form>
+                </template>
+                <!-- LOG A CALL form -->
+                <template if:true={isCallType}>
+                    <lightning-record-edit-form
+                        record-id={editingActivityId}
+                        object-api-name="Task"
+                        onsuccess={handleActivitySaved}
+                        onerror={handleFormError}>
+                        <lightning-messages></lightning-messages>
+                        <div class="form-grid">
+                            <lightning-input-field field-name="Subject" value="Call" class="slds-hide"></lightning-input-field>
+                            <lightning-input-field field-name="Status"></lightning-input-field>
+                            <lightning-input-field field-name="ActivityDate"></lightning-input-field>
+                            <lightning-input-field field-name="Description" class="span-full"></lightning-input-field>
+                        </div>
+                        <lightning-input-field field-name="WhatId" value={activityWhatId} class="slds-hide"></lightning-input-field>
+                        <div class="modal-footer">
+                            <button class="btn-cancel" onclick={handleCloseActivityModal}>Cancel</button>
+                            <lightning-button type="submit" label="Save" variant="brand"></lightning-button>
+                        </div>
+                    </lightning-record-edit-form>
+                </template>
+            </div>
+        </div>
+    </template>
+
+    <!-- ═══════════ SITE VISIT MODAL (New + Edit) ═══════════ -->
+    <template if:true={showSiteVisitModal}>
+        <div class="modal-backdrop" onclick={handleCloseSiteVisitModal}></div>
+        <div class="modal-box modal-box-lg">
+            <div class="modal-header">
+                <span class="modal-title">Site Visit</span>
+                <button class="modal-close" onclick={handleCloseSiteVisitModal}>&#10005;</button>
+            </div>
+            <div class="modal-body">
+                <lightning-record-edit-form
+                    record-id={editingSiteVisitId}
+                    object-api-name="Site_Visit__c"
+                    onsuccess={handleSiteVisitSaved}
+                    onerror={handleFormError}>
+                    <lightning-messages></lightning-messages>
+                    <div class="form-section-title">Site Visit Information</div>
+                    <div class="form-grid">
+                        <lightning-input-field field-name="CustomLead__c"></lightning-input-field>
+                        <lightning-input-field field-name="Visit_Date_Time__c" required></lightning-input-field>
+                        <lightning-input-field field-name="Property_Manager1__c"></lightning-input-field>
+                    </div>
+                    <lightning-input-field field-name="Property__c" value={selectedRecordId} class="slds-hide"></lightning-input-field>
+                    <div class="modal-footer">
+                        <button class="btn-cancel" onclick={handleCloseSiteVisitModal}>Cancel</button>
+                        <lightning-button type="submit" label="Save" variant="brand"></lightning-button>
+                    </div>
+                </lightning-record-edit-form>
+            </div>
+        </div>
+    </template>
+
+    <!-- ═══════════ ALL ACTIVITIES MODAL ═══════════ -->
+    <template if:true={showAllActivitiesModal}>
+        <div class="modal-backdrop" onclick={handleCloseAllActivities}></div>
+        <div class="modal-box modal-box-lg">
+            <div class="modal-header">
+                <span class="modal-title">All Activities ({activityCount})</span>
+                <button class="modal-close" onclick={handleCloseAllActivities}>&#10005;</button>
+            </div>
+            <div class="modal-body modal-scroll-body">
+                <template if:true={hasActivities}>
+                    <template for:each={activities} for:item="act">
+                        <div key={act.Id} class="activity-card">
+                            <div class="activity-icon-wrap">
+                                <lightning-icon icon-name={act.iconName} size="x-small"></lightning-icon>
+                            </div>
+                            <div class="activity-details">
+                                <div class="activity-subject">{act.Subject}</div>
+                                <div class="activity-meta">
+                                    <span class="activity-date">&#128336; {act.formattedDate}</span>
+                                    <span class="activity-type-badge">{act.typeBadge}</span>
+                                    <template if:true={act.isSynced}>
+                                        <span class="sync-badge">&#128260; Sync Active</span>
+                                    </template>
+                                </div>
+                            </div>
+                            <div class="card-actions">
+                                <button class="btn-card-edit" data-id={act.Id} onclick={handleEditActivityFromModal} title="Edit">&#9998;</button>
+                            </div>
+                        </div>
+                    </template>
+                </template>
+                <template if:false={hasActivities}>
+                    <div class="section-empty">No activities recorded</div>
+                </template>
+            </div>
+        </div>
+    </template>
+
+    <!-- ═══════════ ALL SITE VISITS MODAL ═══════════ -->
+    <template if:true={showAllSiteVisitsModal}>
+        <div class="modal-backdrop" onclick={handleCloseAllSiteVisits}></div>
+        <div class="modal-box modal-box-lg">
+            <div class="modal-header">
+                <span class="modal-title">All Site Visits ({siteVisitCount})</span>
+                <button class="modal-close" onclick={handleCloseAllSiteVisits}>&#10005;</button>
+            </div>
+            <div class="modal-body modal-scroll-body">
+                <template if:true={hasSiteVisits}>
+                    <template for:each={siteVisits} for:item="sv">
+                        <div key={sv.Id} class="visit-card">
+                            <div class="visit-card-main">
+                                <div class="visit-meta">
+                                    <span class="visit-date">&#128336; {sv.formattedDate}</span>
+                                    <template if:true={sv.Status__c}>
+                                        <span class="visit-status-badge" style={sv.statusStyle}>{sv.Status__c}</span>
+                                    </template>
+                                    <template if:true={sv.managerName}>
+                                        <lightning-icon icon-name="utility:user" size="xx-small"></lightning-icon>
+                                        <span class="visit-manager">{sv.managerName}</span>
+                                    </template>
+                                    <button class="btn-card-edit visit-edit-btn" data-id={sv.Id} onclick={handleEditSiteVisitFromModal} title="Edit">&#9998;</button>
+                                </div>
+                                <template if:true={sv.leadName}>
+                                    <div class="visit-property">&#128100; {sv.leadName}</div>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+                </template>
+                <template if:false={hasSiteVisits}>
+                    <div class="section-empty">No site visits recorded</div>
+                </template>
+            </div>
+        </div>
+    </template>
+
+    <!-- ═══════════ ALL LEADS MODAL ═══════════ -->
+    <template if:true={showAllLeadsModal}>
+        <div class="modal-backdrop" onclick={handleCloseAllLeads}></div>
+        <div class="modal-box modal-box-lg">
+            <div class="modal-header">
+                <span class="modal-title">All Leads ({leadCount})</span>
+                <button class="modal-close" onclick={handleCloseAllLeads}>&#10005;</button>
+            </div>
+            <div class="modal-body modal-scroll-body">
+                <template if:true={hasLeads}>
+                    <template for:each={leads} for:item="lead">
+                        <div key={lead.Id} class="lead-related-card">
+                            <div class="lead-related-avatar">
+                                <lightning-icon icon-name="standard:lead" size="x-small"></lightning-icon>
+                            </div>
+                            <div class="lead-related-details">
+                                <div class="lead-related-name">{lead.Full_Name__c}</div>
+                                <div class="lead-related-meta">
+                                    <template if:true={lead.Phone__c}>
+                                        <span class="lead-related-phone">&#128222; {lead.Phone__c}</span>
+                                    </template>
+                                    <template if:true={lead.Lead_Status__c}>
+                                        <span class="lead-related-status" style={lead.statusStyle}>{lead.Lead_Status__c}</span>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </template>
+                <template if:false={hasLeads}>
+                    <div class="section-empty">No leads linked to this property</div>
+                </template>
+            </div>
+        </div>
+    </template>
+
+    <!-- ═══════════ DETAIL VIEW ═══════════ -->
+    <template if:true={showDetail}>
+        <div class="detail-container">
+
+            <div class="detail-topbar">
+                <button class="btn-back" onclick={handleBackToList}>
+                    &#8592;&nbsp; Properties / {detailPropertyName}
+                </button>
+                <button class="btn-edit-lead" onclick={handleEditProperty}>&#9998; Edit Property</button>
+            </div>
+
+            <template if:true={isDetailLoading}>
+                <div class="loading-state">
+                    <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+                </div>
+            </template>
+
+            <template if:true={hasDetailProperty}>
+
+                <!-- Property Header -->
+                <div class="lead-header">
+                    <div class="lead-avatar">
+                        <lightning-icon icon-name="standard:home" size="medium"></lightning-icon>
+                    </div>
+                    <div class="lead-info">
+                        <h1 class="lead-name">{detailProperty.Name}</h1>
+                        <span class="lead-status-dot">
+                            <span class="status-dot"></span>
+                            {detailProperty.Position__c}
+                        </span>
+                    </div>
+                    <div class="property-price-wrap">
+                        <div class="pipeline-label">ASKING PRICE</div>
+                        <div class="property-price-value">{detailProperty.formattedPrice}</div>
+                        <template if:true={detailProperty.recordTypeName}>
+                            <div class="property-type-badge">{detailProperty.recordTypeName}</div>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- Contact / Info Row -->
+                <div class="contact-row">
+                    <div class="contact-card">
+                        <lightning-icon icon-name="utility:home" size="x-small"></lightning-icon>
+                        <div class="contact-info">
+                            <span class="contact-label">PARENT PROJECT</span>
+                            <span class="contact-value">{detailProperty.parentProjectName}</span>
+                        </div>
+                    </div>
+                    <div class="contact-card">
+                        <lightning-icon icon-name="utility:layers" size="x-small"></lightning-icon>
+                        <div class="contact-info">
+                            <span class="contact-label">CONFIGURATION</span>
+                            <span class="contact-value">{detailProperty.Configuration__c}</span>
+                        </div>
+                    </div>
+                    <div class="contact-card">
+                        <lightning-icon icon-name="utility:compass" size="x-small"></lightning-icon>
+                        <div class="contact-info">
+                            <span class="contact-label">FACING</span>
+                            <span class="contact-value">{detailProperty.Facing__c}</span>
+                        </div>
+                    </div>
+                    <div class="contact-card">
+                        <lightning-icon icon-name="utility:expand" size="x-small"></lightning-icon>
+                        <div class="contact-info">
+                            <span class="contact-label">AREA</span>
+                            <span class="contact-value">{detailProperty.formattedArea}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sections Row -->
+                <div class="sections-row">
+
+                    <!-- ── Leads ── -->
+                    <div class="section-card">
+                        <div class="section-header">
+                            <div class="section-title-wrap">
+                                <lightning-icon icon-name="standard:lead" size="x-small"></lightning-icon>
+                                <span class="section-title">Leads</span>
+                                <span class="section-count">{leadCount}</span>
+                            </div>
+                        </div>
+                        <div class="section-body">
+                            <template if:true={isLeadsLoading}>
+                                <div class="section-loading">
+                                    <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+                                </div>
+                            </template>
+                            <template if:false={isLeadsLoading}>
+                                <template if:true={hasLeads}>
+                                    <template for:each={visibleLeads} for:item="lead">
+                                        <div key={lead.Id} class="lead-related-card">
+                                            <div class="lead-related-avatar">
+                                                <lightning-icon icon-name="standard:lead" size="x-small"></lightning-icon>
+                                            </div>
+                                            <div class="lead-related-details">
+                                                <div class="lead-related-name">{lead.Full_Name__c}</div>
+                                                <div class="lead-related-meta">
+                                                    <template if:true={lead.Phone__c}>
+                                                        <span class="lead-related-phone">&#128222; {lead.Phone__c}</span>
+                                                    </template>
+                                                    <template if:true={lead.Lead_Status__c}>
+                                                        <span class="lead-related-status" style={lead.statusStyle}>{lead.Lead_Status__c}</span>
+                                                    </template>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template if:true={hasMoreLeads}>
+                                        <div class="view-more-bar" onclick={handleViewAllLeads}>
+                                            &#x25BC; {viewAllLeadsLabel}
+                                        </div>
+                                    </template>
+                                </template>
+                                <template if:false={hasLeads}>
+                                    <div class="section-empty">No leads linked to this property</div>
+                                </template>
+                            </template>
+                        </div>
+                    </div>
+
+                    <!-- ── Activities ── -->
+                    <div class="section-card">
+                        <div class="section-header">
+                            <div class="section-title-wrap">
+                                <lightning-icon icon-name="utility:activity" size="x-small"></lightning-icon>
+                                <span class="section-title">Activities</span>
+                                <span class="section-count">{activityCount}</span>
+                            </div>
+                            <div class="dropdown-wrap">
+                                <button class="btn-add-section" onclick={handleNewActivity}>+</button>
+                                <template if:true={showActivityDropdown}>
+                                    <div class="activity-dropdown">
+                                        <div class="dropdown-item" data-type="Event" onclick={handleActivityTypeSelect}>
+                                            <lightning-icon icon-name="utility:event" size="x-small"></lightning-icon>
+                                            <span>New Event</span>
+                                        </div>
+                                        <div class="dropdown-item" data-type="Call" onclick={handleActivityTypeSelect}>
+                                            <lightning-icon icon-name="utility:call" size="x-small"></lightning-icon>
+                                            <span>Log a Call</span>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                        <div class="section-body">
+                            <template if:true={isActivitiesLoading}>
+                                <div class="section-loading">
+                                    <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+                                </div>
+                            </template>
+                            <template if:false={isActivitiesLoading}>
+                                <template if:true={hasActivities}>
+                                    <template for:each={visibleActivities} for:item="act">
+                                        <div key={act.Id} class="activity-card">
+                                            <div class="activity-icon-wrap">
+                                                <lightning-icon icon-name={act.iconName} size="x-small"></lightning-icon>
+                                            </div>
+                                            <div class="activity-details">
+                                                <div class="activity-subject">{act.Subject}</div>
+                                                <div class="activity-meta">
+                                                    <span class="activity-date">&#128336; {act.formattedDate}</span>
+                                                    <span class="activity-type-badge">{act.typeBadge}</span>
+                                                    <template if:true={act.isSynced}>
+                                                        <span class="sync-badge">&#128260; Sync Active</span>
+                                                    </template>
+                                                </div>
+                                            </div>
+                                            <div class="card-actions">
+                                                <button class="btn-card-edit" data-id={act.Id} onclick={handleEditActivity} title="Edit">&#9998;</button>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template if:true={hasMoreActivities}>
+                                        <div class="view-more-bar" onclick={handleViewAllActivities}>
+                                            &#x25BC; {viewAllActivitiesLabel}
+                                        </div>
+                                    </template>
+                                </template>
+                                <template if:false={hasActivities}>
+                                    <div class="section-empty">No activities recorded</div>
+                                </template>
+                            </template>
+                        </div>
+                    </div>
+
+                    <!-- ── Site Visits ── -->
+                    <div class="section-card">
+                        <div class="section-header">
+                            <div class="section-title-wrap">
+                                <lightning-icon icon-name="utility:location" size="x-small"></lightning-icon>
+                                <span class="section-title">Site Visits</span>
+                                <span class="section-count">{siteVisitCount}</span>
+                            </div>
+                            <button class="btn-add-section" onclick={handleNewSiteVisit}>+</button>
+                        </div>
+                        <div class="section-body">
+                            <template if:true={isSiteVisitsLoading}>
+                                <div class="section-loading">
+                                    <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+                                </div>
+                            </template>
+                            <template if:false={isSiteVisitsLoading}>
+                                <template if:true={hasSiteVisits}>
+                                    <template for:each={visibleSiteVisits} for:item="sv">
+                                        <div key={sv.Id} class="visit-card">
+                                            <div class="visit-card-main">
+                                                <div class="visit-meta">
+                                                    <span class="visit-date">&#128336; {sv.formattedDate}</span>
+                                                    <template if:true={sv.Status__c}>
+                                                        <span class="visit-status-badge" style={sv.statusStyle}>{sv.Status__c}</span>
+                                                    </template>
+                                                    <template if:true={sv.managerName}>
+                                                        <lightning-icon icon-name="utility:user" size="xx-small"></lightning-icon>
+                                                        <span class="visit-manager">{sv.managerName}</span>
+                                                    </template>
+                                                    <button class="btn-card-edit visit-edit-btn" data-id={sv.Id} onclick={handleEditSiteVisit} title="Edit">&#9998;</button>
+                                                </div>
+                                                <template if:true={sv.leadName}>
+                                                    <div class="visit-property">&#128100; {sv.leadName}</div>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template if:true={hasMoreSiteVisits}>
+                                        <div class="view-more-bar" onclick={handleViewAllSiteVisits}>
+                                            &#x25BC; {viewAllSiteVisitsLabel}
+                                        </div>
+                                    </template>
+                                </template>
+                                <template if:false={hasSiteVisits}>
+                                    <div class="section-empty">No site visits recorded</div>
+                                </template>
+                            </template>
+                        </div>
+                    </div>
+
+                </div>
+            </template>
+        </div>
+    </template>
+
+    <!-- ═══════════ LIST VIEW ═══════════ -->
+    <template if:false={showDetail}>
+        <div class="list-container">
+            <div class="list-header">
+                <div class="list-title-group">
+                    <h2 class="list-title">Properties</h2>
+                    <span class="list-count">{totalCount} records</span>
+                </div>
+                <button class="btn-new" onclick={handleNew}>+ New Property</button>
+            </div>
+
+            <div class="search-bar">
+                <lightning-input
+                    type="search"
+                    placeholder="Search properties..."
+                    value={searchKey}
+                    onchange={handleSearch}
+                    class="search-input">
+                </lightning-input>
+            </div>
+
+            <div class="table-wrapper">
+                <template if:true={isLoading}>
+                    <div class="loading-state">
+                        <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+                    </div>
+                </template>
+
+                <template if:false={isLoading}>
+                    <template if:true={hasRecords}>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Parent Project</th>
+                                    <th>Type</th>
+                                    <th>Asking Price</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={pagedRecords} for:item="rec">
+                                    <tr key={rec.Id}>
+                                        <td class="td-name" data-label="Name">
+                                            <span class="lead-name-link" data-id={rec.Id} onclick={handleNameClick}>{rec.Name}</span>
+                                        </td>
+                                        <td data-label="Parent Project">{rec.parentProjectName}</td>
+                                        <td data-label="Type">{rec.recordTypeName}</td>
+                                        <td data-label="Price">{rec.formattedPrice}</td>
+                                        <td data-label="Status">
+                                            <span class="status-badge" style={rec.statusStyle}>{rec.Position__c}</span>
+                                        </td>
+                                        <td class="td-actions">
+                                            <button class="btn-edit" data-id={rec.Id} onclick={handleEditInline}>Edit</button>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+
+                        <div class="pagination-bar">
+                            <span class="page-info">{pageInfo}</span>
+                            <div class="page-controls">
+                                <button class="btn-page" onclick={handlePrevPage} disabled={isFirstPage}>&#8249; Prev</button>
+                                <span class="page-indicator">{currentPage} / {totalPages}</span>
+                                <button class="btn-page" onclick={handleNextPage} disabled={isLastPage}>Next &#8250;</button>
+                            </div>
+                        </div>
+                    </template>
+
+                    <template if:false={hasRecords}>
+                        <div class="empty-state"><p>No properties found.</p></div>
+                    </template>
+                </template>
+            </div>
+        </div>
+    </template>
+
+</template>

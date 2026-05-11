@@ -1,0 +1,415 @@
+/* Container */
+.vendor-container {
+    background: #ffffff;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* Table Base */
+.vendor-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+/* Header Styles */
+.vendor-header {
+    background: linear-gradient(to bottom, #f7f9fb, #f3f4f6);
+    border-bottom: 2px solid #0176d3;
+}
+
+.vendor-header th {
+    padding: 1rem 1.25rem;
+    text-align: left;
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #3e3e3c;
+    border-bottom: 2px solid #e5e5e5;
+}
+
+.header-vendor {
+    width: 180px;
+    min-width: 180px;
+}
+
+.header-name {
+    width: 30%;
+}
+
+.header-phone {
+    width: 20%;
+}
+
+.header-email {
+    width: 35%;
+}
+
+/* Vendor Type Cell (Merged) */
+.vendor-type-cell {
+    background: #f8f9fb;
+    color: #3e3e3c;
+    font-weight: 600;
+    text-align: center;
+    vertical-align: middle;
+    padding: 1.5rem 1rem;
+    border-right: 2px solid #e5e5e5;
+    position: relative;
+}
+
+.vendor-type-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.vendor-icon {
+    --slds-c-icon-color-foreground: #8b8b8d;
+    --slds-c-icon-color-background: transparent;
+    margin-bottom: 0.25rem;
+}
+
+.vendor-type-text {
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-align: center;
+    word-wrap: break-word;
+    max-width: 150px;
+    color: #2e2e2c;
+}
+
+/* Row Styles */
+.vendor-row {
+    transition: all 0.2s ease;
+}
+
+.vendor-row:hover {
+    background-color: #f7f9fb;
+    transform: translateX(2px);
+}
+
+.vendor-row:nth-child(even) {
+    background-color: #fafafa;
+}
+
+.vendor-row:nth-child(even):hover {
+    background-color: #f4f6f9;
+}
+
+.vendor-row td {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid #e5e5e5;
+    vertical-align: middle;
+}
+
+/* Remove bottom border on last row of each group */
+.vendor-row:last-of-type td {
+    border-bottom: 2px solid #d4d4d4;
+}
+
+/* Name Cell */
+.name-cell {
+    font-weight: 600;
+    color: #181818;
+}
+
+/* Phone Cell */
+.phone-cell {
+    color: #444;
+}
+
+.phone-link {
+    color: #0176d3;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    margin-left: -0.5rem;
+}
+
+.phone-link:hover {
+    background-color: #e8f4fc;
+    color: #014486;
+    text-decoration: none;
+}
+
+/* Email Cell */
+.email-link {
+    color: #0176d3;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    margin-left: -0.5rem;
+}
+
+.email-link:hover {
+    background-color: #e8f4fc;
+    color: #014486;
+    text-decoration: none;
+}
+
+/* Contact Icons */
+.contact-icon {
+    opacity: 0.7;
+}
+
+.phone-link:hover .contact-icon,
+.email-link:hover .contact-icon {
+    opacity: 1;
+}
+
+/* No Data State */
+.no-data {
+    color: #c9c7c5;
+    font-style: italic;
+    font-size: 0.875rem;
+}
+
+/* Tablet Responsive Design */
+@media (max-width: 1024px) {
+    .vendor-header th {
+        padding: 0.875rem 1rem;
+        font-size: 0.688rem;
+    }
+
+    .vendor-row td {
+        padding: 0.875rem 1rem;
+    }
+
+    .header-vendor {
+        width: 140px;
+        min-width: 140px;
+    }
+}
+
+/* Mobile Responsive Design - Card Layout */
+@media (max-width: 768px) {
+    .vendor-container {
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    /* Hide table header on mobile */
+    .vendor-header {
+        display: none;
+    }
+
+    .vendor-table,
+    .vendor-table tbody {
+        display: block;
+        width: 100%;
+    }
+
+    /* Make each vendor group a card */
+    .vendor-table tbody {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    /* Card-style layout for each vendor */
+    .vendor-row {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+        padding: 1rem;
+        margin: 0.5rem;
+        border: 1px solid #e5e5e5;
+        border-radius: 0.5rem;
+        background: #ffffff;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .vendor-row:hover {
+        transform: none;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Vendor type badge at top of card */
+    .vendor-type-cell {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        border-right: none;
+        border-bottom: 2px solid #e5e5e5;
+        border-radius: 0.25rem;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(135deg, #f8f9fb 0%, #eef1f6 100%);
+    }
+
+    .vendor-type-content {
+        flex-direction: row;
+        gap: 0.75rem;
+    }
+
+    .vendor-type-text {
+        font-size: 0.9375rem;
+        max-width: none;
+    }
+
+    /* Mobile cell styling with labels */
+    .vendor-row td {
+        display: block;
+        padding: 0.5rem 0;
+        border: none;
+        text-align: left;
+    }
+
+    .name-cell,
+    .phone-cell,
+    .email-cell {
+        position: relative;
+        padding-left: 0;
+    }
+
+    /* Add labels before content on mobile */
+    .name-cell::before,
+    .phone-cell::before,
+    .email-cell::before {
+        content: attr(data-label);
+        display: block;
+        font-weight: 600;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        color: #706e6b;
+        margin-bottom: 0.25rem;
+        letter-spacing: 0.05em;
+    }
+
+    .name-cell::before {
+        content: "Name";
+    }
+
+    .phone-cell::before {
+        content: "Phone";
+    }
+
+    .email-cell::before {
+        content: "Email";
+    }
+
+    /* Mobile-friendly links */
+    .phone-link,
+    .email-link {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.625rem 0.75rem;
+        margin: 0.25rem 0 0 0;
+        border-radius: 0.375rem;
+        background-color: #f4f6f9;
+        font-size: 0.9375rem;
+        min-height: 44px; /* Touch-friendly size */
+    }
+
+    .phone-link:active,
+    .email-link:active {
+        background-color: #e8f4fc;
+        transform: scale(0.98);
+    }
+
+    .contact-icon {
+        opacity: 1;
+        flex-shrink: 0;
+    }
+
+    /* Name styling */
+    .name-cell {
+        font-size: 1.125rem;
+        font-weight: 700;
+        color: #181818;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid #e5e5e5;
+        margin-bottom: 0.5rem;
+    }
+
+    .name-cell .slds-truncate {
+        white-space: normal;
+        word-wrap: break-word;
+    }
+
+    /* No data state for mobile */
+    .no-data {
+        display: block;
+        padding: 0.625rem 0.75rem;
+        background-color: #f4f6f9;
+        border-radius: 0.375rem;
+        margin: 0.25rem 0 0 0;
+        text-align: center;
+    }
+
+    /* Vendor icon sizing */
+    .vendor-icon {
+        width: 1.25rem;
+        height: 1.25rem;
+    }
+
+    /* Remove alternating row colors on mobile since we use cards */
+    .vendor-row:nth-child(even) {
+        background-color: #ffffff;
+    }
+
+    .vendor-row:nth-child(even):hover {
+        background-color: #ffffff;
+    }
+}
+
+/* Extra small phones */
+@media (max-width: 480px) {
+    .vendor-row {
+        margin: 0.25rem;
+        padding: 0.875rem;
+    }
+
+    .name-cell {
+        font-size: 1rem;
+    }
+
+    .phone-link,
+    .email-link {
+        font-size: 0.875rem;
+        padding: 0.5rem 0.625rem;
+    }
+
+    .vendor-type-text {
+        font-size: 0.875rem;
+    }
+}
+
+/* Accessibility */
+.vendor-table:focus-within .vendor-row:focus-within {
+    outline: 2px solid #0176d3;
+    outline-offset: -2px;
+}
+
+/* Loading and Empty States */
+.slds-align_absolute-center {
+    text-align: center;
+    padding: 3rem 1rem;
+}
+
+.slds-notify_alert {
+    margin-bottom: 1rem;
+}
+
+/* Improve touch targets on all devices */
+@media (hover: none) and (pointer: coarse) {
+    .phone-link,
+    .email-link {
+        min-height: 44px;
+        padding: 0.75rem;
+    }
+}

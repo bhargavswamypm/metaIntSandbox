@@ -1,0 +1,353 @@
+<apex:page standardController="Invoice__c" extensions="InvoicePdfController" action="{!generatePDF}"
+           standardStylesheets="false" showHeader="false" applyHtmlTag="false" applyBodyTag="false" docType="html-5.0"
+           renderAs="pdf">
+    <html>
+        <head>
+            <style>
+                
+                @page {
+                size:A4 Portrait;
+                
+                border: 2px solid black;   
+                }
+                
+                .cellcolor{
+                background-color:#808080; 
+                color:white;} 
+                
+                .tablecellcolor{
+                background-color:#dbdbd9;
+                color:Black;
+                text-align: center}
+                
+                .divLeft{width:50%; float:left}
+                .divRight{width:48%; float:right}
+                
+                .keep-together {
+                    page-break-inside: avoid;
+                }
+
+                table, th, td {
+                border:1px solid black;
+                border-collapse: collapse;
+                }
+                
+            </style> 
+        </head>
+    </html>
+    
+    <body>
+        <apex:pageblock >
+            <H2 class="headertitle" style="color:#808080; text-align: center;">
+                INVOICE
+            </H2>
+        </apex:pageblock>
+        <div>
+            <div class="divLeft">
+                <apex:outputLabel style="color:#000000;font-size:12pt;font-family: Georgia, serif;"> 
+                    <h4 style="margin-bottom:0">{!CompName} </h4>					 
+                    {!OAdd1}<br/>						 
+                    {!OAdd2}<br/>							 
+                    GST No : {!GST}<br/>							 
+                    PAN No : {!Pan}<br/>							 
+                    Phone : {!Phone}<br/>					 
+                    Email : {!Email}<br/><br/>				 
+                </apex:outputLabel>
+            </div>
+        </div> 
+        <div>
+            
+            <div style="width:40%; float:right;">
+                <apex:image id="theImage" value="{!$Resource.Zucitech_Logo}" width="250" height="75" />
+                <div style="margin-top:6%">
+                    <div style="width:100%">
+                        <table style="width:100%">                      
+                            <tr style="background-color: #dbdbd9;">
+                                <td><center>INVOICE ID</center></td>
+                                <td><center>DATE</center></td>
+                                <!--   <td><center>DUE DATE</center></td> -->
+                            </tr>                        
+                            <tr style="{!IF(invoice.Regenerate_PDF__c == true, 'true', 'display:none')}">
+                                <td><center><apex:outputText value="{!CInvoiceId}"></apex:outputText></center></td>
+                                <td><center><apex:outputText value="{0, date,dd'/'MM'/'yyyy}">
+                                    <apex:param value="{!invoice.Invoice_Date__c}"/></apex:outputText></center></td>
+                                <!-- <td><center><apex:outputText value="{0, date,dd'/'MM'/'yyyy}">
+										<apex:param value="{!invoice.Due_Date__c}"/></apex:outputText></center></td> -->
+                            </tr>
+                            <tr style="{!IF(invoice.Regenerate_PDF__c == true, 'display:none','true')}">
+                                <td><center><apex:outputText value="{!invoice.Invoice_Id_For_VF__c}"></apex:outputText></center></td>
+                                <td><center><apex:outputText value="{0, date,dd'/'MM'/'yyyy}">
+                                    <apex:param value="{!invoice.Invoice_Date__c}"/></apex:outputText></center></td>
+                                <!-- <td><center><apex:outputText value="{0, date,dd'/'MM'/'yyyy}">
+										<apex:param value="{!invoice.Due_Date__c}"/></apex:outputText></center></td> -->
+                            </tr>  
+                        </table>
+                    </div> 
+                </div>
+            </div>                       
+            
+            <div>     
+                <div class="divLeft" style="font-size:12pt;font-family: Georgia, serif">
+                    <table style="width:100%; background-color: #dbdbd9 ">
+                        <tr>
+                            <td><b>BILL TO</b></td>
+                        </tr>
+                    </table>
+                    
+                    <!--   <p><b>Client Details</b></p> -->
+                    
+                    <br/> 
+                    <apex:repeat value="{!opportunity}" var="opp">
+                        <b><apex:outputText value="{!opp.account.Name}"></apex:outputText></b><br/>          
+                        <apex:outputPanel rendered="{!(!ISBLANK(opp.account.BillingStreet))}">
+                            <apex:outputText value="{!opp.account.BillingStreet}"></apex:outputText>,<br/>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!(!ISBLANK(opp.account.BillingCity))}">
+                            <apex:outputText value="{!opp.account.BillingCity}"></apex:outputText>,
+                        </apex:outputPanel> 
+                        <apex:outputPanel rendered="{!(!ISBLANK(opp.account.BillingState))}">
+                            <apex:outputText value="{!opp.account.BillingState}"></apex:outputText><br/>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!(!ISBLANK(opp.account.BillingCountry))}">
+                            <apex:outputText value="{!opp.account.BillingCountry}"></apex:outputText>,
+                        </apex:outputPanel> 
+                        <apex:outputPanel rendered="{!(!ISBLANK(opp.account.BillingPostalCode))}">
+                            <apex:outputText value="{!opp.account.BillingPostalCode}"></apex:outputText><br/>
+                        </apex:outputPanel>
+                            <div>
+                                <p>
+                                    <b>PO Number :</b> {!PONumber} <br/>
+                        <apex:outputPanel rendered="{!(!ISBLANK(opp.account.Phone))}">
+                           Ph : &nbsp; <apex:outputText value="{!opp.account.Phone}"></apex:outputText><br/>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!(!ISBLANK(opp.account.Email__c))}">
+                         Email : &nbsp; <apex:outputText value="{!opp.account.Email__c}"></apex:outputText><br/>
+                        </apex:outputPanel>           
+                                </p>
+                            </div>
+                    </apex:repeat> 
+                </div>
+            </div>
+        </div>
+        
+        
+     <!--   <div style="{!IF(invoiceLineItem != null, 'display:block', 'display:none')}"> -->
+            
+            <div style="width:100%; float:left;">
+                <hr style="width:100%; height:1px; background-color:#dbdbd9;"/><br/>
+                
+                <p style="text-align:center;color:red;font-size:11px;font-family:verdana;margin-top:10px;"><b>SUPPLY MEANT FOR EXPORTS OF SERVICES UNDER BOND OR LETTER OF UNDERTAKING WITHOUT PAYMENT OF INTEGRATED TAX
+                    </b></p>
+            </div>
+            <div>
+                <div style="font-size:14px; width:100%; float:left"> 
+                    <table border = "0px" style="width:100%" cellpadding = "2" cellspacing = "0">
+                        <tr class="tablecellcolor">
+                            <th style="width:300px; text-align:center">Name of Product / Service</th>
+                            <apex:outputPanel rendered="{!invoice.Invoice_Type__c == 'Name based'}" layout="none">
+    						<th style="width:100px; text-align:center">Unit Price</th></apex:outputPanel>
+                            <th style="width:100px; text-align:center">Quantity</th>
+                            <th style="width:100px; text-align:center">HSN/SAC</th>
+                            <th style="width:200px; text-align:center">Amount (INR)</th>
+                         </tr>
+
+           	<apex:repeat value="{!invoiceLineItem}" var="acc">
+                     <apex:outputPanel layout="none" rendered="{!acc.No_Working_Days__c != 0}">
+                            <tr>  
+                                <td style="text-align:left;">
+                                    <apex:outputText value="{!acc.Employee__r.name} - {!acc.Employee__r.Designation__c}"></apex:outputText>
+                                    <apex:outputText value=" ({!acc.No_Working_Days__c} Days)" rendered="{!acc.Less_Working_Days__c}"/>
+<!--                                <apex:outputPanel rendered="IF({!acc.Less_Working_Days__c})">{!acc.Employee__r.name} - {!acc.Employee__r.Designation__c} ({!acc.No_Working_Days__c} Days)</apex:outputPanel>
+                                    <apex:outputPanel rendered="!IF({!acc.Less_Working_Days__c})">{!acc.Employee__r.name} - {!acc.Employee__r.Designation__c}</apex:outputPanel> -->
+                                    <apex:outputPanel rendered="{!NOT(ISBLANK(acc.Comment__c))}"> ({!acc.Comment__c})</apex:outputPanel></td>
+                                
+                                <td	style="text-align:center;"> 
+                                    <apex:outputText value="{!acc.Cost__c}"> </apex:outputText>  </td>
+                                    
+                               <!-- <td style="text-align:center;">{!acc.Cost__c}</td> -->
+                                <td style="text-align:center;">1</td>
+                                <td style="text-align:center;">{!HSNSAC}</td>
+                                 <td	style="text-align:center;"> 
+                                    <apex:outputText value="{!acc.Cost__c}"> </apex:outputText>  </td>
+                               <!-- <td style="text-align:center;">{!acc.Cost__c}</td> -->
+                            </tr>
+                            <tr style="{!IF(acc.US_Call_Allowances__c != 0.00 && acc.US_Call_Allowances__c != null && acc.invoiceid__r.Club_All_Individual_Allowances__c == false, 'true', 'display:none')}">
+                                        <td style="text-align:left;">{!acc.Employee__r.name}'s US Call Allowance</td> 
+                                        <td style="text-align:center;">{!UsCall}</td>
+                                        <td style="text-align:center;">{!acc.US_Call__c}</td>
+                                        <td style="text-align:center;">{!HSNSAC}</td>
+                                        <td style="text-align:center;">{!acc.US_Call_Allowances__c}</td>
+                                    </tr>
+                         
+                                    <tr style="{!IF(acc.Night_Shift_Allowances__c != 0.00 && acc.Night_Shift_Allowances__c != null && acc.invoiceid__r.Club_All_Individual_Allowances__c == false, 'true', 'display:none')}">
+                                        <td style="text-align:left;">{!acc.Employee__r.name}'s Night Shift Allowance</td> 
+                                        <td style="text-align:center;">{!NightShift}</td>
+                                        <td style="text-align:center;">{!acc.Night_Shift__c}</td>
+                                        <td style="text-align:center;">{!HSNSAC}</td>
+                                        <td style="text-align:center;">{!acc.Night_Shift_Allowances__c}</td>
+                                    </tr>
+                                    <tr style="{!IF(acc.PST_Shift_Allowances__c != 0.00 && acc.PST_Shift_Allowances__c != null && acc.invoiceid__r.Club_All_Individual_Allowances__c == false, 'true', 'display:none')}">
+                                        <td style="text-align:left;">{!acc.Employee__r.name}'s PST Shift Allowance</td> 
+                                        <td style="text-align:center;">{!PSTShift}</td>
+                                        <td style="text-align:center;">{!acc.PST_Shift__c}</td>
+                                        <td style="text-align:center;">{!HSNSAC}</td>
+                                        <td style="text-align:center;">{!acc.PST_Shift_Allowances__c}</td>
+                                    </tr>
+                                    <tr style="{!IF(acc.Weekend_Allowances__c != 0.00 && acc.Weekend_Allowances__c != null, 'true', 'display:none')}">
+                                        <td style="text-align:left;">{!acc.Employee__r.name}'s Weekend Allowance</td> 
+                                        <td style="text-align:center;">{!acc.Weekend_Expense__c}</td>
+                                        <td style="text-align:center;">{!acc.Weekend__c}</td>
+                                        <td style="text-align:center;">{!HSNSAC}</td>
+                                        <td style="text-align:center;">{!acc.Weekend_Allowances__c}</td>
+                                    </tr>
+                         </apex:outputPanel>
+            </apex:repeat>          
+                        
+<apex:repeat value="{!groupedLineItems}" var="item">
+    <apex:outputPanel layout="none" rendered="{!item.quantity != 0}">
+        <tr style="{!IF(item.lessWorkingDays, '', '')}">
+            <td style="text-align:left;">{!item.designation}{!IF(item.lessWorkingDays, ' (' & TEXT(item.workingDays) & ' Days)' , '')}</td>
+            <td style="text-align:center;">{!item.quantity}</td>
+            <td style="text-align:center;">{!HSNSAC}</td>
+            <td style="text-align:center;">{!item.totalCost}</td>
+        </tr>
+        <!--<tr style="{!IF(item.usAl != 0.00 && item.usAl != null, '', 'display:none')}{!IF(item.lessWorkingDays, '', '')}">
+            <td style="text-align:left;">{!item.designation}{!IF(item.lessWorkingDays, ' (' & TEXT(item.workingDays) & ' Days)' , '')}'s US Call Allowance</td> 
+            <td style="text-align:center;">{!item.us}</td>
+            <td style="text-align:center;">{!HSNSAC}</td>
+            <td style="text-align:center;">{!item.usAl}</td>
+        </tr>
+        <tr style="{!IF(item.nightAl != 0.00 && item.nightAl != null, '', 'display:none')}{!IF(item.lessWorkingDays, '', '')}">
+            <td style="text-align:left;">{!item.designation}{!IF(item.lessWorkingDays, ' (' & TEXT(item.workingDays) & ' Days)' , '')}'s Night Shift Allowance</td> 
+            <td style="text-align:center;">{!item.night}</td>
+            <td style="text-align:center;">{!HSNSAC}</td>
+            <td style="text-align:center;">{!item.nightAl}</td>
+        </tr>
+        <tr style="{!IF(item.pstAl != 0.00 && item.pstAl != null, '', 'display:none')}{!IF(item.lessWorkingDays, '', '')}">
+            <td style="text-align:left;">{!item.designation}{!IF(item.lessWorkingDays, ' (' & TEXT(item.workingDays) & ' Days)' , '')}'s PST Shift Allowance</td> 
+            <td style="text-align:center;">{!item.pst}</td>
+            <td style="text-align:center;">{!HSNSAC}</td>
+            <td style="text-align:center;">{!item.pstAl}</td>
+        </tr>
+        <tr style="{!IF(item.weekendAl != 0.00 && item.weekendAl != null, '', 'display:none')}{!IF(item.lessWorkingDays, '', '')}">
+            <td style="text-align:left;">{!item.designation}{!IF(item.lessWorkingDays, ' (' & TEXT(item.workingDays) & ' Days)' , '')}'s Weekend Allowance</td> 
+            <td style="text-align:center;">{!item.weekend}</td>
+            <td style="text-align:center;">{!HSNSAC}</td>
+            <td style="text-align:center;">{!item.weekendAl}</td>
+        </tr> -->
+    </apex:outputPanel>
+</apex:repeat>
+                    <!-- Count for all shift allowances -->                             
+            			<!-- Invoice Type - Name Based -->
+                        <tr style="{!IF(invoice.US_Call_Overall_Count__c > 0 && invoice.Club_All_Individual_Allowances__c == true && invoice.Invoice_Type__c == 'Name based', 'true', 'display:none' )}">                          
+                                        <td style="text-align:left;">US Call Allowances</td>
+                                        <td style="text-align:center;">{!invoice.US_Call_Expense__c}</td>
+                                        <td style="text-align:center;">{!invoice.US_Call_Overall_Count__c}</td>
+                                        <td style="text-align:center;">{!HSNSAC}</td>
+                                        <td style="text-align:center;">{!invoice.Total_US_Cost__c}</td>    
+                        </tr>  
+                        
+                		<tr style="{!IF(invoice.Night_Shift_Overall_Count__c > 0 && invoice.Club_All_Individual_Allowances__c == true && invoice.Invoice_Type__c == 'Name based', 'true', 'display:none' )}">                          
+                                        <td style="text-align:left;">Night Call Allowances</td>
+                                        <td style="text-align:center;">{!invoice.Night_Shift_Expense__c}</td>
+                                        <td style="text-align:center;">{!invoice.Night_Shift_Overall_Count__c}</td>
+                                        <td style="text-align:center;">{!HSNSAC}</td>
+                                        <td style="text-align:center;">{!invoice.Total_Night_Cost__c}</td>
+                        </tr>
+                        
+                		<tr style="{!IF(invoice.PST_Shift_Overall_Count__c > 0 && invoice.Club_All_Individual_Allowances__c == true && invoice.Invoice_Type__c == 'Name based', 'true', 'display:none' )}">                          
+                                        <td style="text-align:left;">PST Call Allowances</td>
+                                        <td style="text-align:center;">{!invoice.PST_Shift_Expense__c}</td>
+                                        <td style="text-align:center;">{!invoice.PST_Shift_Overall_Count__c}</td>
+                                        <td style="text-align:center;">{!HSNSAC}</td>
+                                        <td style="text-align:center;">{!invoice.Total_PST_Cost__c}</td>  
+                        </tr>
+                
+                        
+                        
+                        <!-- Invoice Type - Designation Based -->
+                        <tr style="{!IF(invoice.US_Call_Overall_Count__c > 0 && invoice.Invoice_Type__c == 'Designation based' , 'true', 'display:none' )}">                          
+                                        <td style="text-align:left;">US Call Allowances</td>
+                                        <td style="text-align:center;">{!invoice.US_Call_Overall_Count__c}</td>
+                                        <td style="text-align:center;">{!HSNSAC}</td>
+                                        <td style="text-align:center;">{!invoice.Total_US_Cost__c}</td>    
+                        </tr>  
+                        
+                		<tr style="{!IF(invoice.Night_Shift_Overall_Count__c > 0 && invoice.Invoice_Type__c == 'Designation based', 'true', 'display:none' )}">                          
+                                        <td style="text-align:left;">Night Call Allowances</td>
+                                        <td style="text-align:center;">{!invoice.Night_Shift_Overall_Count__c}</td>
+                                        <td style="text-align:center;">{!HSNSAC}</td>
+                                        <td style="text-align:center;">{!invoice.Total_Night_Cost__c}</td>
+                        </tr>
+                		<tr style="{!IF(invoice.PST_Shift_Overall_Count__c > 0 && invoice.Invoice_Type__c == 'Designation based', 'true', 'display:none' )}">                          
+                                        <td style="text-align:left;">PST Call Allowances</td>
+                                        <td style="text-align:center;">{!invoice.PST_Shift_Overall_Count__c}</td>
+                                        <td style="text-align:center;">{!HSNSAC}</td>
+                                        <td style="text-align:center;">{!invoice.Total_PST_Cost__c}</td>  
+                        </tr>
+
+                		<tr style="{!IF(invoice.Night_Shift_Overall_Count__c > 0 && invoice.Invoice_Type__c == 'Designation based', 'true', 'display:none' )}">                          
+                                        <td style="text-align:left;">Weekend Allowances</td>
+                                        <td style="text-align:center;">{!invoice.Weekend_Overall_Count__c}</td>
+                                        <td style="text-align:center;">{!HSNSAC}</td>
+                                        <td style="text-align:center;">{!invoice.Total_Weekend_Cost__c}</td>
+                        </tr> 
+                        
+                        <tr>
+    						<th Style="border-top:none;border-bottom:none;border-left:none" colspan="{!col}"></th>
+                            <td><b>TOTAL AMOUNT BEFORE TAX</b></td>
+                            <td style="text-align:center">{!invoice.Total_amount__c}</td>
+                        </tr>
+                        <tr >
+    						<th Style="border-top:none;border-bottom:none;border-left:none" colspan="{!col}"></th>
+                            <td Style="font-weight: bold;">ADD SGST: <br/><br/>
+                                ADD CGST:  
+                            </td>
+                            <td style="text-align:center">9%<br/><br/>
+                                9%</td>
+                        </tr>
+                        <tr>
+                            <th Style="border-top:none;border-bottom:none;border-left:none" colspan="{!col}"></th>
+                            <td><b>TOTAL AMOUNT + GST</b></td>
+                            <td style="text-align:center">{!invoice.Total_Amount_After_Tax__c}</td>
+                        </tr>
+
+                    </table>
+                    <br/>
+                            <div class="keep-together">
+                                            <div style="font-size:14px; width:100%;">
+                    <b>Amount: &nbsp;&nbsp;Rs.&nbsp;{!invoice.Total_Amount_After_Tax__c}</b><br/>
+                    <b>Amount In Words:  &nbsp;&nbsp; {!numInWords}</b>
+                                </div>
+                    </div>
+                    
+                    
+                </div>
+
+            </div>
+    <!--    </div> -->
+        
+        <div>          
+            <div style="position: relative; bottom: 0; width: 70;float:left; font-size:13px;"> 
+                <p><br/><br/><br/><br/><br/><br/><br/> <br/>    
+                    <b>Bank Details</b><br/>							 
+                    Name : {!invoice.Account_Holder_Name__c}<br/>					 
+                    Account No : {!invoice.Account_Number__c}<br/>						 
+                    Bank Name : {!invoice.Bank_Name__c} <br/>		 
+                    Bank Address : {!invoice.Bank_Address__c}<br/>				 
+                    Swift Code : {!invoice.Swift_Code__c}<br/>						 
+                    GST LUT ARN : {!invoice.GST_LUT_ARN__c}<br/>
+                </p>                
+            </div>
+            
+            <div style="position: relative; bottom: 0; width: 70;float:right; font-size:13px;"> 
+                <p> <br/><br/><br/><br/><br/><br/><br/><br/>                     
+                    <b>For ZuciTech Software Solutions Pvt.Ltd</b>                   
+                </p>
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/> <br/><!-- <br/><br/> <apex:image id="signature" value="{!$Resource.Signature}" width="150" height="75" /> --><br/>
+                    &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; Authorised Signatory		 
+                </p>          
+            </div>
+        </div>    
+    </body>   
+</apex:page>

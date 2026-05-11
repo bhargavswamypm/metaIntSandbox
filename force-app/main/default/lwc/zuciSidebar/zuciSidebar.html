@@ -1,0 +1,55 @@
+<template>
+    <!-- Mobile Back Button -->
+<template if:true={showBackButton}>
+    <div class="mobile-back" onclick={handleBack}>
+        <lightning-icon icon-name="utility:back" size="small"></lightning-icon>
+        <span>Back</span>
+    </div>
+</template>
+
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <img src={logoUrl} alt="ZuciTech" class="logo-img" />
+        </div>
+
+        <div class="sidebar-user">
+            <div class="user-avatar">
+                <lightning-icon icon-name="standard:user" size="small"></lightning-icon>
+            </div>
+            <div class="user-info">
+                <p class="user-name">{userName}</p>
+                <p class="user-role">{userRole}</p>
+            </div>
+        </div>
+
+        <nav class="nav">
+            <template for:each={navItems} for:item="item">
+                <div key={item.id} class={item.cssClass} data-target={item.id} onclick={handleNavClick}>
+                    <lightning-icon icon-name={item.iconName} size="x-small" class="nav-icon"></lightning-icon>
+                    <span class="nav-label">{item.label}</span>
+                </div>
+            </template>
+
+            <!-- Commented out — to be enabled later -->
+            <!--
+            <div class="nav-item nav-disabled">
+                <lightning-icon icon-name="utility:orders" size="x-small"></lightning-icon>
+                <span class="nav-label">Orders</span>
+            </div>
+            <div class="nav-item nav-disabled">
+                <lightning-icon icon-name="utility:contract" size="x-small"></lightning-icon>
+                <span class="nav-label">Purchase Orders</span>
+            </div>
+            <div class="nav-item nav-disabled">
+                <lightning-icon icon-name="utility:payment_gateway" size="x-small"></lightning-icon>
+                <span class="nav-label">Payments</span>
+            </div>
+            -->
+        </nav>
+
+        <div class="signout" onclick={handleSignOut}>
+            <lightning-icon icon-name="utility:logout" size="x-small"></lightning-icon>
+            <span>Sign Out</span>
+        </div>
+    </div>
+</template>

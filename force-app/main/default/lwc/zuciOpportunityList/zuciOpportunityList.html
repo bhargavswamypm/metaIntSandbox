@@ -1,0 +1,80 @@
+<template>
+    <div class="list-container">
+        <div class="list-header">
+            <div class="list-title-group">
+                <h2 class="list-title">Opportunities</h2>
+                <span class="list-count">{totalCount} records</span>
+            </div>
+            <button class="btn-new" onclick={handleNew}>+ New Opportunity</button>
+        </div>
+
+        <div class="search-bar">
+            <lightning-input
+                type="search"
+                placeholder="Search opportunities..."
+                value={searchKey}
+                onchange={handleSearch}
+                class="search-input">
+            </lightning-input>
+        </div>
+
+        <div class="table-wrapper">
+            <template if:true={isLoading}>
+                <div class="loading-state">
+                    <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+                </div>
+            </template>
+
+            <template if:false={isLoading}>
+                <template if:true={hasRecords}>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Property</th>
+                                <th>Stage</th>
+                                <th>Amount</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template for:each={pagedRecords} for:item="rec">
+                                <tr key={rec.Id}>
+                                    <td class="td-name">{rec.Name}</td>
+                                    <td data-label="Property">{rec.propertyName}</td>
+                                    <td data-label="Stage">
+                                        <span class="status-badge" style={rec.stageStyle}>{rec.Stage__c}</span>
+                                    </td>
+                                    <td data-label="Amount">{rec.formattedAmount}</td>
+                                    <td class="td-actions">
+                                        <button class="btn-edit" data-id={rec.Id} onclick={handleEdit}>Edit</button>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+
+                    <!-- Pagination -->
+                    <div class="pagination-bar">
+                        <span class="page-info">{pageInfo}</span>
+                        <div class="page-controls">
+                            <button class="btn-page" onclick={handlePrevPage} disabled={isFirstPage}>
+                                &#8249; Prev
+                            </button>
+                            <span class="page-indicator">{currentPage} / {totalPages}</span>
+                            <button class="btn-page" onclick={handleNextPage} disabled={isLastPage}>
+                                Next &#8250;
+                            </button>
+                        </div>
+                    </div>
+                </template>
+
+                <template if:false={hasRecords}>
+                    <div class="empty-state">
+                        <p>No opportunities found.</p>
+                    </div>
+                </template>
+            </template>
+        </div>
+    </div>
+</template>

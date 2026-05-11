@@ -1,0 +1,47 @@
+<template>
+    <div class="portal-wrapper">
+        <c-zuci-sidebar active-nav={activeNav} onnavigate={handleNavigate}></c-zuci-sidebar>
+
+        <div class="main-content">
+            <!-- HOME DASHBOARD -->
+            <template if:true={isHome}>
+                <div class="welcome-section">
+                    <h1 class="welcome-heading">Welcome, {userName}</h1>
+                    <p class="welcome-sub">Welcome to ZuciTech</p>
+                </div>
+                <div class="cards-grid">
+                    <template for:each={dashboardCards} for:item="card">
+                        <c-zuci-dashboard-card
+                            key={card.id}
+                            title={card.title}
+                            icon-name={card.iconName}
+                            accent-color={card.accentColor}
+                            nav-target={card.navTarget}
+                            onviewall={handleViewAll}>
+                        </c-zuci-dashboard-card>
+                    </template>
+                </div>
+            </template>
+
+            <!-- LEADS LIST -->
+            <template if:true={isLeads}>
+                <c-zuci-lead-list></c-zuci-lead-list>
+            </template>
+
+            <!-- PROPERTY LIST -->
+            <template if:true={isProperty}>
+                <c-zuci-property-list></c-zuci-property-list>
+            </template>
+
+            <!-- CONTACT LIST -->
+            <template if:true={isContact}>
+                <c-zuci-contact-list></c-zuci-contact-list>
+            </template>
+
+            <!-- OPPORTUNITY LIST -->
+            <template if:true={isOpportunity}>
+                <c-zuci-opportunity-list></c-zuci-opportunity-list>
+            </template>
+        </div>
+    </div>
+</template>

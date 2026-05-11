@@ -1,0 +1,170 @@
+<template>
+    <lightning-card title="Property Documents" icon-name="doctype:attachment">
+        <div class="slds-card__body slds-card__body_inner">
+            <!-- Loading Spinner -->
+            <template if:true={isLoading}>
+                <div class="slds-align_absolute-center slds-m-vertical_large">
+                    <lightning-spinner alternative-text="Loading documents" size="medium"></lightning-spinner>
+                </div>
+            </template>
+
+            <!-- Error Message -->
+            <template if:true={error}>
+                <div class="slds-text-color_error slds-text-align_center slds-m-vertical_medium">
+                    <p>{error}</p>
+                </div>
+            </template>
+
+            <!-- No Property Linked -->
+            <template if:true={noPropertyLinked}>
+                <div class="slds-text-align_center slds-m-vertical_large">
+                    <lightning-icon icon-name="standard:record" size="large" class="slds-m-bottom_small"></lightning-icon>
+                    <p class="slds-text-heading_small">No Property Linked</p>
+                    <p class="slds-text-color_weak">Link a property to view its documents</p>
+                </div>
+            </template>
+
+            <!-- No Documents Message -->
+            <template if:false={isLoading}>
+                <template if:false={hasDocuments}>
+                    <template if:false={noPropertyLinked}>
+                        <div class="slds-text-align_center slds-m-vertical_large">
+                            <lightning-icon icon-name="doctype:attachment" size="large" class="slds-m-bottom_small"></lightning-icon>
+                            <p class="slds-text-heading_small">No documents found</p>
+                            <p class="slds-text-color_weak">Upload documents to the linked property</p>
+                        </div>
+                    </template>
+                </template>
+            </template>
+
+            <!-- Document Viewer -->
+            <template if:true={hasDocuments}>
+                <div class="slideshow-container">
+                    <!-- Document Display Area -->
+                    <div class="document-viewer" onclick={handleDocumentClick}>
+                        <!-- Image Display -->
+                        <template if:true={isImage}>
+                            <img 
+                                src={currentDocument.downloadUrl} 
+                                alt={currentDocument.title}
+                                class="document-image"
+                            />
+                        </template>
+
+                        <!-- PDF Display -->
+                        <template if:true={isPdf}>
+                            <div class="pdf-container">
+                                <object 
+                                    data={currentDocument.downloadUrl}
+                                    type="application/pdf"
+                                    class="pdf-viewer">
+                                    <p class="slds-text-align_center slds-m-top_large">
+                                        PDF preview not available in this browser.<br/>
+                                        <lightning-button 
+                                            label="Open in New Tab" 
+                                            onclick={handleDocumentClick}
+                                            variant="brand"
+                                            class="slds-m-top_small">
+                                        </lightning-button>
+                                    </p>
+                                </object>
+                            </div>
+                        </template>
+
+                        <!-- Other Document Types -->
+                        <template if:true={isDocument}>
+                            <div class="document-placeholder">
+                                <lightning-icon 
+                                    icon-name={currentDocument.iconName} 
+                                    size="large"
+                                    class="slds-m-bottom_small">
+                                </lightning-icon>
+                                <p class="slds-text-heading_medium slds-m-bottom_x-small">
+                                    {currentDocument.title}
+                                </p>
+                                <p class="slds-text-body_small slds-text-color_weak">
+                                    {currentDocument.fileType} • {currentDocument.fileSize}
+                                </p>
+                                <p class="slds-text-body_small slds-text-color_weak slds-m-top_x-small">
+                                    Click to preview
+                                </p>
+                            </div>
+                        </template>
+
+                        <!-- Document Info Overlay -->
+                        <div class="document-info">
+                            <p class="document-title">{currentDocument.title}</p>
+                            <p class="document-meta">
+                                {currentDocument.fileType} • {currentDocument.fileSize}
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Control Panel -->
+                    <div class="controls-container">
+                        <div class="controls">
+                            <!-- Previous Button -->
+                            <lightning-button-icon
+                                icon-name="utility:chevronleft"
+                                variant="border-filled"
+                                alternative-text="Previous"
+                                title="Previous"
+                                onclick={handlePrevious}
+                                disabled={disablePrevious}
+                                class="control-button">
+                            </lightning-button-icon>
+
+                            <!-- Play/Pause Button -->
+                            <lightning-button-icon
+                                icon-name={playPauseIcon}
+                                variant="brand"
+                                alternative-text={playPauseLabel}
+                                title={playPauseLabel}
+                                onclick={handlePlayPause}
+                                class="control-button play-button">
+                            </lightning-button-icon>
+
+                            <!-- Next Button -->
+                            <lightning-button-icon
+                                icon-name="utility:chevronright"
+                                variant="border-filled"
+                                alternative-text="Next"
+                                title="Next"
+                                onclick={handleNext}
+                                disabled={disableNext}
+                                class="control-button">
+                            </lightning-button-icon>
+
+                            <!-- Position Indicator -->
+                            <span class="position-indicator">
+                                {currentPosition}
+                            </span>
+
+                            <!-- Download Button -->
+                            <lightning-button-icon
+                                icon-name="utility:download"
+                                variant="border-filled"
+                                alternative-text="Download"
+                                title="Download"
+                                onclick={handleDownload}
+                                class="control-button">
+                            </lightning-button-icon>
+                        </div>
+                    </div>
+
+                    <!-- Progress Dots -->
+                    <div class="dots-container">
+                        <template for:each={documents} for:item="doc" for:index="index">
+                            <span 
+                                key={doc.contentDocumentId}
+                                class={doc.dotClass}
+                                data-index={index}
+                                onclick={handleDotClick}>
+                            </span>
+                        </template>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </lightning-card>
+</template>

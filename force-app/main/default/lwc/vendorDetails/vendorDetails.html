@@ -1,0 +1,122 @@
+<template>
+    <lightning-card >
+        <div class="slds-p-around_medium">
+            
+            <!-- Loading Spinner -->
+            <template if:true={isLoading}>
+                <div class="slds-align_absolute-center slds-m-vertical_large">
+                    <lightning-spinner alternative-text="Loading vendors" size="medium"></lightning-spinner>
+                </div>
+            </template>
+
+            <!-- Error Message -->
+            <template if:true={error}>
+                <div class="slds-notify slds-notify_alert slds-alert_error" role="alert">
+                    <span class="slds-assistive-text">error</span>
+                    <h2>Error loading vendor data. Please try again.</h2>
+                </div>
+            </template>
+
+            <!-- Vendor Table -->
+            <template if:true={hasVendors}>
+                <div class="vendor-container">
+                    <table class="vendor-table">
+                        <thead>
+                            <tr class="vendor-header">
+                                <th scope="col" class="header-vendor">
+                                    <div class="slds-truncate">Vendor Type</div>
+                                </th>
+                                <th scope="col" class="header-name">
+                                    <div class="slds-truncate">Name</div>
+                                </th>
+                                <th scope="col" class="header-phone">
+                                    <div class="slds-truncate">Phone</div>
+                                </th>
+                                <th scope="col" class="header-email">
+                                    <div class="slds-truncate">Email</div>
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <template for:each={vendorGroups} for:item="group">
+                                <template for:each={group.records} for:item="vendor" for:index="index">
+                                    <tr key={vendor.Id} class="vendor-row">
+
+                                        <!-- Vendor Type merged cell -->
+                                        <template if:true={vendor.isFirst}>
+                                            <td rowspan={group.rowCount} class="vendor-type-cell">
+                                                <div class="vendor-type-content">
+                                                    <lightning-icon 
+                                                        icon-name={group.iconName}
+                                                        size="small" 
+                                                        class="vendor-icon">
+                                                    </lightning-icon>
+                                                    <span class="vendor-type-text">{group.recordType}</span>
+                                                </div>
+                                            </td>
+                                        </template>
+
+                                        <td class="name-cell">
+                                            <div class="slds-truncate" title={vendor.Name}>
+                                                {vendor.Name}
+                                            </div>
+                                        </td>
+
+                                        <td class="phone-cell">
+                                            <template if:true={vendor.Phone__c}>
+                                                <a href={vendor.phoneLink} class="phone-link">
+                                                    <lightning-icon 
+                                                        icon-name="utility:phone" 
+                                                        size="xx-small" 
+                                                        class="contact-icon">
+                                                    </lightning-icon>
+                                                    {vendor.Phone__c}
+                                                </a>
+                                            </template>
+                                            <template if:false={vendor.Phone__c}>
+                                                <span class="no-data">—</span>
+                                            </template>
+                                        </td>
+
+                                        <td class="email-cell">
+                                            <template if:true={vendor.Email__c}>
+                                                <a href={vendor.emailLink} class="email-link">
+                                                    <lightning-icon 
+                                                        icon-name="utility:email" 
+                                                        size="xx-small" 
+                                                        class="contact-icon">
+                                                    </lightning-icon>
+                                                    {vendor.Email__c}
+                                                </a>
+                                            </template>
+                                            <template if:false={vendor.Email__c}>
+                                                <span class="no-data">—</span>
+                                            </template>
+                                        </td>
+
+                                    </tr>
+                                </template>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+            </template>
+
+            <!-- Empty State -->
+            <template if:false={hasVendors}>
+                <template if:false={isLoading}>
+                    <div class="slds-align_absolute-center slds-m-vertical_large">
+                        <lightning-icon 
+                            icon-name="utility:warning" 
+                            size="large" 
+                            alternative-text="No vendors">
+                        </lightning-icon>
+                        <p class="slds-text-heading_small slds-m-top_small">No vendors found</p>
+                    </div>
+                </template>
+            </template>
+
+        </div>
+    </lightning-card>
+</template>

@@ -1,0 +1,91 @@
+<template>
+    <lightning-card title={cardTitle} icon-name="standard:document">
+        <div class="slds-p-around_medium">
+
+            <template if:true={loading}>
+                <lightning-spinner size="small"></lightning-spinner>
+            </template>
+
+            <template if:false={loading}>
+                
+                <template for:each={items} for:item="item">
+                    <div key={item.apiName} class="slds-border_bottom slds-p-vertical_small">
+                        
+                        <!-- Document Type Header Row -->
+                        <div class="slds-grid slds-grid_vertical-align-center">
+                            <div class="slds-col slds-size_2-of-5">
+                                <lightning-icon icon-name={item.iconName} size="small"></lightning-icon>
+                                <span class="label">{item.label}</span>
+                            </div>
+
+                            <div class="slds-col slds-size_1-of-5">
+                                <template if:true={item.checked}>
+                                    <span class="required">Required</span>
+                                </template>
+                                <template if:false={item.checked}>
+                                    <span class="optional">Optional</span>
+                                </template>
+                            </div>
+
+                            <div class="slds-col slds-size_2-of-5 slds-text-align_right">
+                                <lightning-button variant="brand"
+                                                  label="Upload"
+                                                  data-label={item.label}
+                                                  onclick={prepareUpload}>
+                                </lightning-button>
+                            </div>
+                        </div>
+
+                        <!-- Uploaded Documents List -->
+                        <template if:true={item.uploaded}>
+                            <div class="slds-m-top_x-small slds-m-left_large">
+                                <template for:each={item.documents} for:item="doc">
+                                    <div key={doc.contentDocumentId} 
+                                         class="slds-grid slds-grid_vertical-align-center slds-p-vertical_xx-small document-row">
+                                        
+                                        <div class="slds-col slds-size_1-of-2">
+                                            <lightning-icon icon-name="doctype:attachment" size="x-small"></lightning-icon>
+                                            <span class="doc-indicator">{doc.fileName}</span>
+                                        </div>
+
+                                        <div class="slds-col slds-size_1-of-2 slds-text-align_right">
+                                            <lightning-button-icon 
+                                                icon-name="utility:preview"
+                                                alternative-text="View"
+                                                title="View Document"
+                                                variant="border-filled"
+                                                size="small"
+                                                data-id={doc.contentDocumentId}
+                                                onclick={handleView}>
+                                            </lightning-button-icon>
+                                            <lightning-button-icon 
+                                                icon-name="utility:delete"
+                                                alternative-text="Delete"
+                                                title="Delete Document"
+                                                variant="border-filled"
+                                                size="small"
+                                                data-label={item.label}
+                                                data-property-doc-id={doc.propertyDocumentId}
+                                                data-content-doc-id={doc.contentDocumentId}
+                                                onclick={handleDelete}>
+                                            </lightning-button-icon>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+
+                    </div>
+                </template>
+
+                <div class="slds-m-top_medium slds-text-align_center">
+                    <lightning-button variant="success" label="Verify All"
+                                      onclick={handleVerifyAll}></lightning-button>
+                </div>
+            </template>
+        </div>
+    </lightning-card>
+
+    <!-- Hidden file input -->
+    <input type="file" style="display:none" onchange={handleFileChange} />
+</template>

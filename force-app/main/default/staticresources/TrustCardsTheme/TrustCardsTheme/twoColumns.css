@@ -1,0 +1,62 @@
+.trust-card-container {
+    border: 0.09375rem solid rgb(221, 219, 218); 
+    height: auto; 
+    width: auto; 
+    max-width: 26rem;
+    border-radius: 0.3125rem;
+}
+
+.item-container {
+    width: 12.5rem; /* each trust item has fixed width */
+    max-width: 12.5rem; /* set max width in case width is overwrite */
+}
+
+.item-icon img {
+    width: auto;
+    height: auto;
+    max-width: 2.1875rem; 
+    max-height: 2.1875rem;
+}
+
+.item-icon {
+    width: auto;
+    height: auto;
+    min-width: 2.1875rem;
+}
+
+.item-title {
+    color: rgb(0, 112, 210);
+    font-size: 0.75rem;
+    font-family: SalesforceSans-Bold;
+    font-weight: bold;
+}
+
+.item-description {
+    color: rgb(0, 0, 0);
+    font-size: 0.75rem;
+    font-family: SalesforceSans-Regular;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;  
+    overflow: hidden;
+}
+
+.trust-card-see-more {
+    display: none; 
+    pointer-events: none !important;
+}
+ 
+.trust-card-see-more:checked + .item-description {
+    -webkit-line-clamp: unset;
+}
+  
+.item-description:not(.truncated) ~ .see-more-text, 
+.item-description:not(.truncated) ~ .see-less-text{
+    display: none;
+}
+
+.see-more-text, 
+.see-less-text {
+      color: rgb(0, 112, 210);
+}
+
